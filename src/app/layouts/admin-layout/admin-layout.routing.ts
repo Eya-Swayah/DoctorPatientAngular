@@ -9,7 +9,7 @@ import { MapsComponent } from '../../maps/maps.component';
 import { NotificationsComponent } from '../../notifications/notifications.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { PatientListComponent } from 'app/patient-list/patient-list.component';
-
+import{CallComponent} from 'app/call/call.component'
 export const AdminLayoutRoutes: Routes = [
     // {
     //   path: '',
@@ -59,6 +59,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'typography',     component: TypographyComponent },
     { path: 'icons',          component: IconsComponent },
     { path: 'maps',           component: MapsComponent },
+    { path: 'call',           component: CallComponent },
     { path: 'notifications',  component: NotificationsComponent },
     { path: 'upgrade',        component: UpgradeComponent },
     { path: 'patient-list',        component: PatientListComponent },

@@ -24,6 +24,7 @@ import {
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { environment } from 'environments/environment';
+import { CallComponent } from './call/call.component';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { environment } from 'environments/environment';
   declarations: [
     AppComponent,
     AdminLayoutComponent,
+    CallComponent,
 
   ],
   providers: [],
