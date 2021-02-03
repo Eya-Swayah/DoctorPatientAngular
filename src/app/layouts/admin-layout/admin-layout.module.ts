@@ -18,6 +18,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSelectModule} from '@angular/material/select';
 import { PatientListComponent } from 'app/patient-list/patient-list.component';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 @NgModule({
   imports: [
@@ -31,6 +35,12 @@ import { PatientListComponent } from 'app/patient-list/patient-list.component';
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
+    NgbModalModule,
+    FlatpickrModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
   declarations: [
     DashboardComponent,

@@ -1,42 +1,196 @@
 import { Component, OnInit } from '@angular/core';
-declare var $: any;
+import {
+    ChangeDetectionStrategy,
+    ViewChild,
+    TemplateRef,
+  } from '@angular/core';
+  import {
+    startOfDay,
+    endOfDay,
+    subDays,
+    addDays,
+    endOfMonth,
+    isSameDay,
+    isSameMonth,
+    addHours,
+  } from 'date-fns';
+  import { Subject } from 'rxjs';
+  import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+  import {
+    CalendarEvent,
+    CalendarEventAction,
+    CalendarEventTimesChangedEvent,
+    CalendarView,
+  } from 'angular-calendar';
+  
+  const colors: any = {
+    red: {
+      primary: '#ad2121',
+      secondary: '#FAE3E3',
+    },
+    blue: {
+      primary: '#1e90ff',
+      secondary: '#D1E8FF',
+    },
+    yellow: {
+      primary: '#e3bc08',
+      secondary: '#FDF1BA',
+    },
+  };
+  
 @Component({
   selector: 'app-notifications',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./notifications.component.css'],
   templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.css']
+  
 })
 export class NotificationsComponent implements OnInit {
 
-  constructor() { }
-  showNotification(from, align){
-      const type = ['','info','success','warning','danger'];
+    @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
 
-      const color = Math.floor((Math.random() * 4) + 1);
-
-      $.notify({
-          icon: "notifications",
-          message: "Welcome to <b>Material Dashboard</b> - a beautiful freebie for every web developer."
-
-      },{
-          type: type[color],
-          timer: 4000,
-          placement: {
-              from: from,
-              align: align
-          },
-          template: '<div data-notify="container" class="col-xl-4 col-lg-4 col-11 col-sm-4 col-md-4 alert alert-{0} alert-with-icon" role="alert">' +
-            '<button mat-button  type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons">close</i></button>' +
-            '<i class="material-icons" data-notify="icon">notifications</i> ' +
-            '<span data-notify="title">{1}</span> ' +
-            '<span data-notify="message">{2}</span>' +
-            '<div class="progress" data-notify="progressbar">' +
-              '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-            '</div>' +
-            '<a href="{3}" target="{4}" data-notify="url"></a>' +
-          '</div>'
+    view: CalendarView = CalendarView.Month;
+  
+    CalendarView = CalendarView;
+  
+    viewDate: Date = new Date();
+  
+    modalData: {
+      action: string;
+      event: CalendarEvent;
+    };
+  
+    actions: CalendarEventAction[] = [
+      {
+        label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+        a11yLabel: 'Edit',
+        onClick: ({ event }: { event: CalendarEvent }): void => {
+          this.handleEvent('Edited', event);
+        },
+      },
+      {
+        label: '<i class="fas fa-fw fa-trash-alt"></i>',
+        a11yLabel: 'Delete',
+        onClick: ({ event }: { event: CalendarEvent }): void => {
+          this.events = this.events.filter((iEvent) => iEvent !== event);
+          this.handleEvent('Deleted', event);
+        },
+      },
+    ];
+  
+    refresh: Subject<any> = new Subject();
+  
+    events: CalendarEvent[] = [
+      {
+        start: subDays(startOfDay(new Date()), 1),
+        end: addDays(new Date(), 1),
+        title: 'A 3 day event',
+        color: colors.red,
+        actions: this.actions,
+        allDay: true,
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
+        },
+        draggable: true,
+      },
+      {
+        start: startOfDay(new Date()),
+        title: 'An event with no end date',
+        color: colors.yellow,
+        actions: this.actions,
+      },
+      {
+        start: subDays(endOfMonth(new Date()), 3),
+        end: addDays(endOfMonth(new Date()), 3),
+        title: 'A long event that spans 2 months',
+        color: colors.blue,
+        allDay: true,
+      },
+      {
+        start: addHours(startOfDay(new Date()), 2),
+        end: addHours(new Date(), 2),
+        title: 'A draggable and resizable event',
+        color: colors.yellow,
+        actions: this.actions,
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
+        },
+        draggable: true,
+      },
+    ];
+  
+    activeDayIsOpen: boolean = true;
+  
+    constructor(private modal: NgbModal) {}
+  
+    dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+      if (isSameMonth(date, this.viewDate)) {
+        if (
+          (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+          events.length === 0
+        ) {
+          this.activeDayIsOpen = false;
+        } else {
+          this.activeDayIsOpen = true;
+        }
+        this.viewDate = date;
+      }
+    }
+  
+    eventTimesChanged({
+      event,
+      newStart,
+      newEnd,
+    }: CalendarEventTimesChangedEvent): void {
+      this.events = this.events.map((iEvent) => {
+        if (iEvent === event) {
+          return {
+            ...event,
+            start: newStart,
+            end: newEnd,
+          };
+        }
+        return iEvent;
       });
-  }
-  ngOnInit() {
-  }
+      this.handleEvent('Dropped or resized', event);
+    }
+  
+    handleEvent(action: string, event: CalendarEvent): void {
+      this.modalData = { event, action };
+      this.modal.open(this.modalContent, { size: 'lg' });
+    }
+  
+    addEvent(): void {
+      this.events = [
+        ...this.events,
+        {
+          title: 'New event',
+          start: startOfDay(new Date()),
+          end: endOfDay(new Date()),
+          color: colors.red,
+          draggable: true,
+          resizable: {
+            beforeStart: true,
+            afterEnd: true,
+          },
+        },
+      ];
+    }
+  
+    deleteEvent(eventToDelete: CalendarEvent) {
+      this.events = this.events.filter((event) => event !== eventToDelete);
+    }
+  
+    setView(view: CalendarView) {
+      this.view = view;
+    }
+  
+    closeOpenMonthViewDay() {
+      this.activeDayIsOpen = false;
+    }
+
+  ngOnInit(){}
 
 }

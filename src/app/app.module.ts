@@ -24,7 +24,13 @@ import {
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { environment } from 'environments/environment';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
+
+import { CommonModule } from '@angular/common';
+import { FlatpickrModule } from 'angularx-flatpickr';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap'; 
 
 @NgModule({
   imports: [
@@ -46,11 +52,21 @@ import { environment } from 'environments/environment';
     AppRoutingModule,
     AgmCoreModule.forRoot({
       apiKey: 'YOUR_GOOGLE_MAPS_API_KEY'
-    })
+    }),
+    CommonModule,
+    FormsModule,
+    NgbModalModule,
+    FlatpickrModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
   declarations: [
     AppComponent,
     AdminLayoutComponent,
+
+
 
   ],
   providers: [],
