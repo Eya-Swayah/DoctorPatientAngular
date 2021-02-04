@@ -31,7 +31,7 @@ route : ActivatedRoute
     this.controltApi.getAll()
     .subscribe(
       (data :Patient[])=> {
-      // console.log(data) 
+       console.log(data) 
       
        this.list = data
        this.list_copy = data },

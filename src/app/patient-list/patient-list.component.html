@@ -25,16 +25,16 @@
                                         Email 
                                     </th>
                                     <th>
-                                        Age 
+                                        Gender
                                     </th>
                                     <th>
-                                        Address 
+                                        Action
                                     </th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let p of list_copy">
-                                      <th class="hidden"> {{p.id}}</th>
+                                      
                                      <th>
                                         {{p.firstName}}
                                     </th>
@@ -45,8 +45,9 @@
                                         {{p.email}} 
                                     </th>
                                     <th>
-                                        {{p.age}} 
+                                        {{p.gender}} 
                                     </th>
+                                  
                                     <th>
                                       <button type="button" (click)="delete(p.id)" class="btn btn-outline-danger">Delete</button>  <button type="button" (click) =" edit(p)" class="btn btn-outline-info">Edit </button>
                                     </th>
@@ -69,21 +70,21 @@
                                 <thead class=" text-primary">
                                     <tr>
                                   
-                                      <th>
-                                          First Name
-                                      </th>
-                                      <th>
-                                          Last Name
-                                      </th>
-                                      <th>
-                                          Email 
-                                      </th>
-                                      <th>
-                                          Age 
-                                      </th>
-                                      <th>
-                                          Address 
-                                      </th>
+                                        <th>
+                                            First Name
+                                        </th>
+                                        <th>
+                                            Last Name
+                                        </th>
+                                        <th>
+                                            Email 
+                                        </th>
+                                        <th>
+                                            Gender
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
                                     </tr>
                                   </thead>
                                 <tbody>
